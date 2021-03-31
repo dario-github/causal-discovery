@@ -46,6 +46,8 @@ def user_inv(matrix):
             return xp.linalg.inv(matrix)
         except cp.cuda.cusolver.CUSOLVERError:  # CUDA10.0的遗留问题，输入矩阵过大，需要较大的工作缓冲区
             return cp.asarray(np.linalg.inv(cp.asnumpy(matrix)))
+    else:
+        return xp.linalg.inv(matrix)
     # return cp.linalg.inv(cp.asarray(matrix)).get()
 
 def user_pinv(matrix):

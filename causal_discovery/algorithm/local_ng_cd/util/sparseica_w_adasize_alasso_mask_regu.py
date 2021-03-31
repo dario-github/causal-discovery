@@ -52,7 +52,7 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
 
         omega = np.zeros((ica_model.var_num, ica_model.var_num))
         omega[np.where(cp.asnumpy(mask) != 0)] = cp.asnumpy(omega_temp)
-        ica_model.omega = cp.asarray(omega)
+        ica_model.omega = xp.asarray(omega)
         ica_model.w = w_temp
         ica_model.ww = w_temp
 
