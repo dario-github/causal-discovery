@@ -1,4 +1,26 @@
-# 一、简介
+<a name="index">**Index**</a>
+
+<a href=" 0">一、简介</a>  
+<a href=" 1">二、使用</a>  
+&emsp;<a href="#2">安装</a>  
+&emsp;&emsp;<a href="#3">pip安装</a>  
+&emsp;&emsp;<a href="#4">gpu支持</a>  
+&emsp;<a href="#5">快速入门</a>  
+&emsp;&emsp;<a href="#6">命令行调用</a>  
+&emsp;&emsp;<a href="#7">计算结果说明</a>  
+&emsp;<a href="#8">性能</a>  
+&emsp;<a href="#9">参数说明</a>  
+&emsp;&emsp;<a href="#10">命令行简化版</a>  
+&emsp;&emsp;<a href="#11">参数配置完整版</a>  
+&emsp;&emsp;&emsp;<a href="#12">Local_NG_CD</a>  
+<a href=" 13">三、开发</a>  
+&emsp;<a href="#14">环境准备</a>  
+&emsp;&emsp;<a href="#15">创建虚拟环境</a>  
+&emsp;<a href="#16">构建文档</a>  
+&emsp;<a href="#17">调用方式</a>  
+&emsp;&emsp;<a href="#18">python</a>  
+&emsp;&emsp;<a href="#19">命令行（参数详情见上文）</a>  
+# <a name="0">一、简介</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 因果发现算法工具包，目前包含：
 
@@ -12,16 +34,16 @@
 
 使用方法详见下文。
 
-# 二、使用
+# <a name="1">二、使用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-## 安装
+## <a name="2">安装</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### pip安装
+### <a name="3">pip安装</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 ```sh
 python3.7 -m pip install causal-discovery
 ```
 
-### gpu支持
+### <a name="4">gpu支持</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 需手动查看cuda版本并安装相应版本cupy，可以不安装，默认调用numpy在CPU计算
 
@@ -33,9 +55,9 @@ ls /usr/local/ | grep cuda
 python3.7 -m poetry add cupy-cuda100
 ```
 
-## 快速入门
+## <a name="5">快速入门</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### 命令行调用
+### <a name="6">命令行调用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
 # 查看参数说明
@@ -54,7 +76,7 @@ python3.7 -m causal_discovery run-local-ng-cd simul_data.csv 3 matrixT
 
 控制台日志最后一条为计算结果保存路径，如未指定`output`目录，默认为当前目录
 
-### 计算结果说明
+### <a name="7">计算结果说明</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 仿真数据集`simul_data.csv`调用`local_ng_cd`计算后，结果分为两个文件：
 
@@ -84,7 +106,7 @@ causal  reason  effect
 4       3       0.06902072305646559
 ```
 
-## 性能
+## <a name="8">性能</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 > 建议使用conda自带的numpy库，包含Inter提供的MKL，大幅提高矩阵运算速度（在求逆函数提高约50倍）
 
@@ -96,9 +118,9 @@ causal  reason  effect
 |**cupy.linalg.inv**|**1.39 ms**|**± 41.5 µs**|
 |torch.inverse|6.02 ms|± 6.26 µs|
 
-## 参数说明
+## <a name="9">参数说明</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### 命令行简化版
+### <a name="10">命令行简化版</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
 Usage: __main__.py [OPTIONS] INPUT_FILE TARGET
@@ -146,9 +168,9 @@ Options:
   --help                          Show this message and exit.
 ```
 
-### 参数配置完整版
+### <a name="11">参数配置完整版</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-#### Local_NG_CD
+#### <a name="12">Local_NG_CD</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```python
 # 引用方式
@@ -163,11 +185,11 @@ ica_regu: float = Field(1e-3, gt=0)              # ICA时，用来约束稀疏�
 b_orig_trust_value: float = Field(5e-2, gt=0)    # 得到邻接阵B后，用来进一步筛选的权重阈值，默认0.05，值越大表示越严格
 ```
 
-# 三、开发
+# <a name="13">三、开发</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-## 环境准备
+## <a name="14">环境准备</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### 创建虚拟环境
+### <a name="15">创建虚拟环境</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
   
 ```sh
 # python版本：>=3.7
@@ -177,16 +199,16 @@ python3.7 -m pip install poetry
 python3.7 -m poetry install
 ```
 
-## 构建文档
+## <a name="16">构建文档</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
 poetry install --extra doc
 invoke doc
 ```
 
-## 调用方式
+## <a name="17">调用方式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
    
-### python
+### <a name="18">python</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 ```python
 # 算法主函数
 from causal_discovery.algorithm import local_ng_cd, fges_mb, mab_lingam  
@@ -195,7 +217,7 @@ from causal_discovery.algorithm import local_ng_cd, fges_mb, mab_lingam
 from causal_discovery.parameter.algo import LocalNgCdParam, FgesMbParam, MabLingamParam
 ```
 
-### 命令行（参数详情见上文）
+### <a name="19">命令行（参数详情见上文）</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
 # 查看参数说明
