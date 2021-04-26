@@ -1,15 +1,20 @@
 import logging
+from typing import List, Optional
+
 import numpy as np
 from pydantic import BaseModel
-from causal_discovery.algorithm.local_ng_cd.util.natural_grad_adasize_mask_regu import natural_grad_Adasize_Mask_regu
-from causal_discovery.algorithm.local_ng_cd.util.estim_beta_pham import estim_beta_pham
+
 from causal_discovery.algorithm.local_ng_cd.util.adaptive_size import adaptive_size
+from causal_discovery.algorithm.local_ng_cd.util.estim_beta_pham import estim_beta_pham
+from causal_discovery.algorithm.local_ng_cd.util.natural_grad_adasize_mask_regu import (
+    natural_grad_Adasize_Mask_regu,
+)
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import user_inv
 from causal_discovery.parameter.algo import SparseicaWAdasizeALassoMaskRegu
 from causal_discovery.parameter.env import select_xp, to_numpy
-from typing import Optional, List
 
 xp = select_xp()
+
 
 class ICAModel(BaseModel):
     param = SparseicaWAdasizeALassoMaskRegu()
@@ -130,7 +135,8 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
                 y_psi @ x.conj().T / ica_model.sample_size
                 # + xp.linalg.inv(ica_model.w.conj().T)
                 + user_inv(ica_model.w.conj().T)
-                - 4 * ica_model.beta
+                - 4
+                * ica_model.beta
                 * (
                     xp.diag(xp.diag(y @ y.conj().T / ica_model.sample_size))
                     - xp.eye(ica_model.var_num)
@@ -144,9 +150,7 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
             ica_model.eta, ica_model.z = adaptive_size(
                 ica_model.grad_new, grad_old, ica_model.eta, ica_model.z
             )
-            ica_model.w = (
-                ica_model.w + 0.9 * ica_model.eta * ica_model.z * ica_model.mask
-            )
+            ica_model.w = ica_model.w + 0.9 * ica_model.eta * ica_model.z * ica_model.mask
             grad_old = ica_model.grad_new
 
         # re-scaling
@@ -174,8 +178,5 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
 
 if __name__ == "__main__":
     sparseica_W_adasize_Alasso_mask_regu(
-        xp.random.rand(50, 500),
-        xp.ones((50, 50)) - xp.eye(50),
-        8,
-        1e-3,
+        xp.random.rand(50, 500), xp.ones((50, 50)) - xp.eye(50), 8, 1e-3,
     )

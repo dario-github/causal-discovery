@@ -1,14 +1,15 @@
 import logging
+
 import numpy as np
+
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import pdinv, user_inv, user_pinv
 from causal_discovery.parameter.algo import BetaAdaptiveLassoGrad2Step
 from causal_discovery.parameter.env import select_xp
 
 xp = select_xp()
 
-def betaAlasso_grad_2step(
-    x, y, var_noise: float, lambda_value: float
-):
+
+def betaAlasso_grad_2step(x, y, var_noise: float, lambda_value: float):
     """
     搜索给定 lambda_value 的自适应套索（ALasso；adaptive Lasso Zou, 2006）解。
 
@@ -163,7 +164,7 @@ def betaAlasso_grad_2step(
         if Iter > param.iter_limit:  # TODO 原始值100
             break
     logging.info(f"Iter: {Iter}, Error: {error_value}, Target: {tol}")
-    
+
     beta2_new_n = beta2_new_n * (abs(beta2_new_n) > beta_min_2)
     beta2_al = xp.zeros((N, 1))
 

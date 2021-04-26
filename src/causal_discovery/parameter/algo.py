@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import TypeVar
+
 from pydantic import BaseModel, Field
 
 T = TypeVar("T")
@@ -9,6 +10,7 @@ class DataType(str, Enum):
     triple = "triple"
     matrix = "matrix"
     matrixT = "matrixT"
+
 
 class TypeUpdate(str, Enum):
     square_error = "square_error"
@@ -48,6 +50,7 @@ class AdaptiveSize(BaseModel):
     down: float = 0.8
     eta_minimum: float = 0.03
 
+
 class BetaAdaptiveLassoGrad2Step(BaseModel):
     trad_1: float = 0.2
     tol: float = 1e-2
@@ -70,6 +73,7 @@ class SparseicaWAdasizeALassoMaskRegu(BaseModel):
     itmax: int = 10000
     tol: float = 1e-6
     stagnation_limit: int = 300  # 梯度连续n次没有下降，停止
+
 
 class LocalNgCdParam(BaseModel):
     target_index: int = Field(0, ge=0)  # 目标变量
