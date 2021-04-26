@@ -67,7 +67,7 @@ def get_edges_trust(b_orig, ind_mb):
     ind_from = np.flatnonzero(b_orig[:, 0] != 0)
     if len(ind_from) < 1:
         logging.info("No direct reason.")
-        return edges_trust or []
+        return edges_trust
     logging.info(f"have {len(ind_from)} direct reason")
     for _, ind in enumerate(ind_from):
         edges_trust.append([ind_mb[0], ind_mb[ind], b_orig[ind, 0]])
