@@ -1,4 +1,5 @@
 import numpy as np
+
 from causal_discovery.parameter.env import select_xp, to_numpy
 
 xp = select_xp()

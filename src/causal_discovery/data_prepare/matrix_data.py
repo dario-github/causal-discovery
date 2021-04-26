@@ -1,7 +1,8 @@
-import pandas as pd
-import numpy as np
 import logging
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 
@@ -44,19 +45,23 @@ def vertical_2_horizontal(df, fill_methods):
     date2id = {date: idx for idx, date in enumerate(dates)}
     len_date = len(date2id)
     id_date_value = {}
-    for date, idx, value in tqdm(zip(df["time"], df["id"], df["value"]), desc="group", total=df.shape[0]):
+    for date, idx, value in tqdm(
+        zip(df["time"], df["id"], df["value"]), desc="group", total=df.shape[0]
+    ):
         id_date_value.setdefault(idx, [None] * len_date)
         date_id = date2id[date]
         id_date_value[idx][date_id] = value
 
-    ret_df = pd.DataFrame(np.array(list(id_date_value.values())).T, columns=list(id_date_value.keys()))
+    ret_df = pd.DataFrame(
+        np.array(list(id_date_value.values())).T, columns=list(id_date_value.keys())
+    )
     ret_df["time"] = dates
     # for idx, values in tqdm(id_date_value.items(), desc="date"):
     #     ret_df[idx] = values
     for method in fill_methods:
         if isinstance(method, float):
             ret_df = ret_df.fillna(value=method)
-        elif method in {'backfill', 'bfill', 'pad', 'ffill', None}:
+        elif method in {"backfill", "bfill", "pad", "ffill", None}:
             ret_df = ret_df.fillna(axis=0, method=method)
         else:
             logging.trace(f"Unknown fill method {method}.")
@@ -70,7 +75,7 @@ def get_matrix_data(
     triple_df: pd.DataFrame = None,
     corr_filter=False,
     used_cache_file="",
-    fill_methods=["ffill", "bfill"]
+    fill_methods=["ffill", "bfill"],
 ):
     """
     纵表转横表，基于相关系数筛选指标
@@ -115,14 +120,7 @@ if __name__ == "__main__":
         get_matrix_data(
             "A",
             triple_df=[
-                [
-                    "20200101",
-                    "20200102",
-                    "20200103",
-                    "20200101",
-                    "20200102",
-                    "20200103",
-                ],
+                ["20200101", "20200102", "20200103", "20200101", "20200102", "20200103"],
                 ["A", "A", "A", "B", "B", "B"],
                 [1, 2, 2.5, 3, 10, 222],
             ],

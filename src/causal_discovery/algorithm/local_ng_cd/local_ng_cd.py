@@ -41,6 +41,8 @@ from causal_discovery.parameter.algo import LocalNgCdParam
 from causal_discovery.parameter.env import select_xp, to_numpy
 
 xp = select_xp()
+
+
 def get_edges_trust(b_orig, ind_mb):
     """[从邻接矩阵b_orig中获取马尔科夫毯ind_mb对应的可信边]
 
@@ -131,6 +133,7 @@ def few_point_operation(x, ind_corr_final, target_variable, var_num, sample_size
         # pre-select N/4 features
         ind_corr_final = ind_corr_final[ind_t[: math.floor(sample_size / 4)]]
     return xp.asarray(to_numpy(xp, ind_corr_final))
+
 
 def local_ng_cd(x, param: LocalNgCdParam, synthesize: bool = False):
     """[局部线性非高斯因果发现算法]

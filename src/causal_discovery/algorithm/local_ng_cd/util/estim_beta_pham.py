@@ -1,9 +1,12 @@
 import logging
+
 import numpy as np
+
 from causal_discovery.algorithm.local_ng_cd.util.scorecond import scorecond
 from causal_discovery.parameter.env import select_xp
 
 xp = select_xp()
+
 
 def estim_beta_pham(x):
     """计算x的条件得分函数

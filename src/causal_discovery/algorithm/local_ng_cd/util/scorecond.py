@@ -27,13 +27,16 @@
 # % psi.
 import logging
 import math
+
 import numpy as np
 # import scipy.linalg
 from scipy.sparse import csr_matrix
+
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import user_inv
 from causal_discovery.parameter.env import select_xp, to_numpy
 
 xp = select_xp()
+
 
 def scorecond(data, q=None, bdwidth=None, cova=None):
     n, p = data.shape
@@ -153,18 +156,18 @@ def scorecond(data, q=None, bdwidth=None, cova=None):
     if p > 1:
         # marginal prob. (Mi = M(p-1))
         pm = xp.sum(pr.reshape(mi, mx[p][0], order="F").copy(), axis=1)
-        pm = pm[:, xp.ones((1, to_numpy(xp, mx[p])))].reshape(to_numpy(xp, m[p]), 1, order="F").copy()
-        # avoid 0
-        logp[xp.flatnonzero(pr)] = (
-            xp.log(pr[xp.flatnonzero(pr)]) / pm[xp.flatnonzero(pr)]
+        pm = (
+            pm[:, xp.ones((1, to_numpy(xp, mx[p])))]
+            .reshape(to_numpy(xp, m[p]), 1, order="F")
+            .copy()
         )
+        # avoid 0
+        logp[xp.flatnonzero(pr)] = xp.log(pr[xp.flatnonzero(pr)]) / pm[xp.flatnonzero(pr)]
     else:
         logp[xp.flatnonzero(pr)] = xp.log(pr[xp.flatnonzero(pr)])
 
     # compute the conditional entropy (if asked)
-    entropy = (
-        xp.log(bdwidth * t[-1, -1]) - pr.conj().T @ logp if q is not None else None
-    )
+    entropy = xp.log(bdwidth * t[-1, -1]) - pr.conj().T @ logp if q is not None else None
 
     # Compute the conditional score
     psi = xp.sum(logp[index_cell[nr.flatten(), :]][:, :, 0] * kerp, axis=1)
