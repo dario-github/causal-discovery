@@ -1,11 +1,19 @@
 import logging
 import numpy as np
-import cupy as cp
 from causal_discovery.algorithm.local_ng_cd.util.scorecond import scorecond
+from causal_discovery.parameter.env import select_xp
 
+xp = select_xp()
 
 def estim_beta_pham(x):
-    xp = cp.get_array_module(x)
+    """计算x的条件得分函数
+
+    Args:
+        x ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     t1, t2 = x.shape
     if t1 > t2:
         logging.error(

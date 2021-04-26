@@ -1,9 +1,10 @@
 import logging
 import numpy as np
-import cupy as cp
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import pdinv, user_inv, user_pinv
 from causal_discovery.parameter.algo import BetaAdaptiveLassoGrad2Step
+from causal_discovery.parameter.env import select_xp
 
+xp = select_xp()
 
 def betaAlasso_grad_2step(
     x, y, var_noise: float, lambda_value: float
@@ -29,7 +30,6 @@ def betaAlasso_grad_2step(
 
     作者：张坤
     """
-    xp = cp.get_array_module(x)
     param = BetaAdaptiveLassoGrad2Step()
     var_noise_back = var_noise
 
@@ -81,7 +81,6 @@ def betaAlasso_grad_2step(
         #     beta_new_n = inv(x_new*x_new.conj().T + var_noise*lambda_value * Sigma) * (x_new*y.conj().T)
         # # with gradient trad-off!
         beta_new_n = (
-            # xp.linalg.inv(x_new @ x_new.conj().T + var_noise * lambda_value * sigma)
             user_inv(x_new @ x_new.conj().T + var_noise * lambda_value * sigma)
             @ (x_new @ y.conj().T)
             * trad_1
@@ -123,7 +122,6 @@ def betaAlasso_grad_2step(
 
     x2_new = xp.diagflat(beta2_hat) @ x2
     beta2_new_o = xp.ones((N2, 1))
-    # beta2_new_o = 1E-5 * ones(N,1)
     sum_adjust_beta2 = []
     pl2 = []
     sum_adjust_beta2.append(sum(abs(beta2_new_o)))

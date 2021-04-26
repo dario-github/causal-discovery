@@ -1,14 +1,15 @@
 import logging
 import numpy as np
-import cupy as cp
 from pydantic import BaseModel
 from causal_discovery.algorithm.local_ng_cd.util.natural_grad_adasize_mask_regu import natural_grad_Adasize_Mask_regu
 from causal_discovery.algorithm.local_ng_cd.util.estim_beta_pham import estim_beta_pham
 from causal_discovery.algorithm.local_ng_cd.util.adaptive_size import adaptive_size
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import user_inv
 from causal_discovery.parameter.algo import SparseicaWAdasizeALassoMaskRegu
+from causal_discovery.parameter.env import select_xp, to_numpy
 from typing import Optional, List
 
+xp = select_xp()
 
 class ICAModel(BaseModel):
     param = SparseicaWAdasizeALassoMaskRegu()
@@ -39,7 +40,6 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
     """
         ICA with SCAD penalized entries of the de-mixing matrix
     """
-    xp = cp.get_array_module(x)
 
     def initialization(new_x, ica_model: ICAModel):
         logging.info("Initialization....")
@@ -51,7 +51,7 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
         omega_temp = (omega_temp > upper) * upper + omega_temp * (omega_temp <= upper)
 
         omega = np.zeros((ica_model.var_num, ica_model.var_num))
-        omega[np.where(cp.asnumpy(mask) != 0)] = cp.asnumpy(omega_temp)
+        omega[np.where(to_numpy(xp, mask) != 0)] = to_numpy(xp, omega_temp)
         ica_model.omega = xp.asarray(omega)
         ica_model.w = w_temp
         ica_model.ww = w_temp
@@ -173,13 +173,9 @@ def sparseica_W_adasize_Alasso_mask_regu(x, mask, lambda_param, regu):
 
 
 if __name__ == "__main__":
-    from peon.log import config_log
-    config_log(
-        "local_ng_cd", "local_ng_cd", log_root="/root/logs", print_terminal=True, enable_monitor=True,
-    )
     sparseica_W_adasize_Alasso_mask_regu(
-        cp.random.rand(50, 500),
-        cp.ones((50, 50)) - cp.eye(50),
+        xp.random.rand(50, 500),
+        xp.ones((50, 50)) - xp.eye(50),
         8,
         1e-3,
     )

@@ -1,22 +1,16 @@
 import numpy as np
-import cupy as cp
-import torch
-if torch.cuda.is_available():
-    device_str = "cuda:0"  # torch 对 CUDA_VISIBLE_DEVICES 的支持不好，如果可见GPU不是0开头的无法识别
-    # kernel = cp.ElementwiseKernel("float64 A", "float64 invA", "")
-else:
-    device_str = "cpu"
-device = torch.device(device_str)
+from causal_discovery.parameter.env import select_xp, to_numpy
+
+xp = select_xp()
 
 
 def pdinv(A):
     """
     PDINV 计算正定阵的逆
     """
-    xp = cp.get_array_module(A)
     num_data = A.shape[0]
     try:
-        U = np.linalg.cholesky(cp.asnumpy(A)).T  # cupy对于非正定阵不报错，所以还是用numpy来求上三角阵
+        U = np.linalg.cholesky(to_numpy(xp, A)).T  # cupy对于非正定阵不报错，所以还是用numpy来求上三角阵
         # invU = eye(num_data)/U
         # invU = xp.eye(num_data) @ xp.linalg.inv(U)  # 用了伪逆
         invU = xp.eye(num_data) @ user_inv(xp.asarray(U))  # 用了伪逆
@@ -39,22 +33,33 @@ def pdinv(A):
 
 
 def user_inv(matrix):
-    xp = cp.get_array_module(matrix)
-    # return xp.asarray(torch.inverse(torch.from_numpy(cp.asnumpy(matrix)).to(device)).cpu())
-    if xp == cp:
+    """自定义求逆函数
+
+    Args:
+        matrix ([np.ndarray]): [numpy矩阵]
+
+    Returns:
+        [np.ndarray]: [matrix的逆阵]
+    """
+    if xp.__name__ == "cupy":
         try:
             return xp.linalg.inv(matrix)
-        except cp.cuda.cusolver.CUSOLVERError:  # CUDA10.0的遗留问题，输入矩阵过大，需要较大的工作缓冲区
-            return cp.asarray(np.linalg.inv(cp.asnumpy(matrix)))
+        except xp.cuda.cusolver.CUSOLVERError:  # CUDA10.0的遗留问题，输入矩阵过大，需要较大的工作缓冲区
+            return xp.asarray(np.linalg.inv(xp.asnumpy(matrix)))
     else:
         return xp.linalg.inv(matrix)
-    # return cp.linalg.inv(cp.asarray(matrix)).get()
+
 
 def user_pinv(matrix):
-    xp = cp.get_array_module(matrix)
-    # return xp.asarray(torch.pinverse(torch.from_numpy(cp.asnumpy(matrix)).to(device)).cpu())
+    """自定义求伪逆函数
+
+    Args:
+        matrix ([np.ndarray]): [numpy矩阵]
+
+    Returns:
+        [np.ndarray]: [matrix的伪逆]
+    """
     return xp.linalg.pinv(matrix)
-    # return cp.linalg.pinv(cp.asarray(matrix)).get()
 
 
 if __name__ == "__main__":
