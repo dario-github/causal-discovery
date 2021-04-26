@@ -28,14 +28,14 @@
 import logging
 import math
 import numpy as np
-import cupy as cp
 # import scipy.linalg
 from scipy.sparse import csr_matrix
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import user_inv
+from causal_discovery.parameter.env import select_xp, to_numpy
 
+xp = select_xp()
 
 def scorecond(data, q=None, bdwidth=None, cova=None):
-    xp = cp.get_array_module(data)
     n, p = data.shape
 
     if not q:
@@ -138,22 +138,22 @@ def scorecond(data, q=None, bdwidth=None, cova=None):
     pr = xp.asarray(
         csr_matrix(
             (
-                cp.asnumpy(ker).flatten(order="F"),
+                to_numpy(xp, ker).flatten(order="F"),
                 (
-                    cp.asnumpy(index_cell).flatten(order="F"),
+                    to_numpy(xp, index_cell).flatten(order="F"),
                     np.array([0] * index_cell.size, dtype=int),
                 ),
             ),
-            shape=(cp.asnumpy(m[p - 1]), 1),  # TODO m[p - 1][0], 暂时先+1处理，需要搞清楚为什么
+            shape=(to_numpy(xp, m[p - 1]), 1),  # TODO m[p - 1][0], 暂时先+1处理，需要搞清楚为什么
         ).toarray()
         / n
     )
     # to contain log(cond. prob.)
-    logp = xp.zeros((cp.asnumpy(m[p - 1]), 1))
+    logp = xp.zeros((to_numpy(xp, m[p - 1]), 1))
     if p > 1:
         # marginal prob. (Mi = M(p-1))
         pm = xp.sum(pr.reshape(mi, mx[p][0], order="F").copy(), axis=1)
-        pm = pm[:, xp.ones((1, cp.asnumpy(mx[p])))].reshape(cp.asnumpy(m[p]), 1, order="F").copy()
+        pm = pm[:, xp.ones((1, to_numpy(xp, mx[p])))].reshape(to_numpy(xp, m[p]), 1, order="F").copy()
         # avoid 0
         logp[xp.flatnonzero(pr)] = (
             xp.log(pr[xp.flatnonzero(pr)]) / pm[xp.flatnonzero(pr)]

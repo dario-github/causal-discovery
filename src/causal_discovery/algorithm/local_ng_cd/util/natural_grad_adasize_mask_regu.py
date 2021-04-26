@@ -1,15 +1,14 @@
 import logging
 import numpy as np
-import cupy as cp
-# import scipy.linalg
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import pdinv, user_inv
 from causal_discovery.algorithm.local_ng_cd.util.estim_beta_pham import estim_beta_pham
 from causal_discovery.algorithm.local_ng_cd.util.adaptive_size import adaptive_size
 from causal_discovery.parameter.algo import NaturalGradAdasizeMaskRegu
+from causal_discovery.parameter.env import select_xp
 
+xp = select_xp()
 
 def natural_grad_Adasize_Mask_regu(x, mask, regu, ww=None):
-    xp = cp.get_array_module(x)
     param = NaturalGradAdasizeMaskRegu()
     var_num, sample_size = x.shape
     mu = param.mu
