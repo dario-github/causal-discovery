@@ -1,36 +1,6 @@
-# causal_discovery
+# 一、简介
 
-因果发现算法工具包
-
-## 环境准备
-
-- 创建虚拟环境
-  
-```shell
-# python版本：3.8
-cd $PROJECT_DIR
-python3.8 -m pip install -U pip setuptools
-python3.8 -m pip install poetry
-python3.8 -m poetry install
-
-# 需要root权限写入host，如不需要回测环境，只需指定环境变量即可
-source env.sh
-```
-
-> 建议使用conda自带的numpy库，包含Inter提供的MKL，大幅提高矩阵运算速度（在求逆函数提高约50倍）
-
-`numpy`、`cupy`、`torch`在500 * 500 随机阵求逆的性能对比
-
-|函数|mean|std|
-|-|-|-|
-|numpy.linalg.inv|71.8 ms|± 64.9 ms|
-|cupy.linalg.inv|1.39 ms|± 41.5 µs|
-|torch.inverse|6.02 ms|± 6.26 µs|
-## 执行样例
-
-### Python调用
-
-test目录下是每种算法的调用样例，目前包含：
+因果发现算法工具包，目前包含：
 
 - fges_mb: 详见`docs/algo/算法伪代码.doc`，page-3：FGES算法
 - local_ng_cd：详见`docs/algo/Local_NG_CD分享文档.doc`
@@ -43,21 +13,97 @@ test目录下是每种算法的调用样例，目前包含：
 
 建议先使用**local_ng_cd**测试数据集效果（速度最快，算法最新，结果渐进正确，考虑了未知混杂因子）
 
-测试使用仿真数据集：`simul_data.csv`，列索引为指标ID，行索引是样本ID。
+测试使用仿真数据集：`tests/test_data/simul_data.csv`，列索引为指标ID，行索引是样本ID。也可以自行生产仿真数据，命令详见下文。
 
-### 命令行调用（主要方式）
+# 二、使用
 
-```shell
-cd $PROJECT_DIR
-python3.8 -m poetry shell
-source env.sh
-python -m causal_discovery --header 0 $PROJECT_DIR/test/test_data/simul_data.csv 3 matrixT
+## 安装
+
+### pip安装
+```sh
+python3.7 -m pip install causal-discovery
 ```
+
+### gpu支持
+
+需手动查看cuda版本并安装相应版本cupy，可以不安装，默认调用numpy在CPU计算
+
+```sh
+# 查看支持的cuda版本
+ls /usr/local/ | grep cuda
+
+# 安装对应cuda版本的cupy，以cuda10.0为例
+python3.7 -m poetry add cupy-cuda100
+```
+
+## 快速入门
+
+### 命令行调用
+
+```sh
+# 查看参数说明
+python3.7 -m causal_discovery fast-simul-data --help
+python3.7 -m causal_discovery run-local-ng-cd --help
+
+# 生产仿真数据的参数样例
+python3.7 -m causal_discovery fast-simul-data --cov-matrix '[[0, 1, 0], [0, 0, 0.5], [1, 0, 0]]' --sample-size 10
+
+# 生产默认的仿真数据集
+python3.7 -m causal_discovery fast-simul-data
+
+# 调用默认仿真数据集
+python3.7 -m causal_discovery run-local-ng-cd simul_data.csv 3 matrixT
+```
+
+控制台日志最后一条为计算结果保存路径，如未指定`output`目录，默认为当前目录
+
+### 计算结果说明
+
+仿真数据集`simul_data.csv`调用`local_ng_cd`计算后，结果分为两个文件：
+
+1）可信边`edges_trust.json`；可信边是原因直接指向结果的路径（1跳）
+
+```
+# 三列，原因、结果、因果效应强度
+# 因果效应强度越大，表示直接因果关系越深，正负分别表示正向、负向影响。
+causal  reason  effect
+2       3       0.7705689874891608
+1       3       0.5863603810291644
+5       1       0.0993025854935757
+3       4       0.5015018174923119
+3       5       0.7071753114627015
+6       5       0.6977965771255858
+```
+
+2）复合权重`synthesize_effect.json`，复合权重是指从原因到结果的所有有向边权重的和，计算n跳复合权重就是计算邻接阵B的n次幂
+
+```
+# 三列，原因、结果、复合因果效应强度（5跳内）
+causal  reason  effect
+2       3       0.7700866938213671
+1       3       0.6950546424688089
+3       3       0.34082384182310194
+5       3       -0.19710467189008646
+4       3       0.06902072305646559
+```
+
+## 性能
+
+> 建议使用conda自带的numpy库，包含Inter提供的MKL，大幅提高矩阵运算速度（在求逆函数提高约50倍）
+
+`numpy`、`cupy`、`torch`在500 * 500 随机阵求逆的性能对比
+
+|函数|mean|std|
+|-|-|-|
+|numpy.linalg.inv|71.8 ms|± 64.9 ms|
+|**cupy.linalg.inv**|**1.39 ms**|**± 41.5 µs**|
+|torch.inverse|6.02 ms|± 6.26 µs|
+
 ## 参数说明
 
 ### 命令行简化版
 
-```shell
+```sh
 Usage: __main__.py [OPTIONS] INPUT_FILE TARGET
                    DATA_TYPE:[triple|matrix|matrixT]
 
@@ -75,6 +121,7 @@ Args:
     log_root (str, optional): [日志目录]. Defaults to "./logs".
     verbose (bool, optional): [是否打印日志到控制台]. Defaults to True.
     candidate_two_step (bool, optional): [是否启用2跳关系筛选]. Defaults to False.
+
 Raises:
     DataTypeError: [数据类型错误]
 
@@ -102,7 +149,7 @@ Options:
   --help                          Show this message and exit.
 ```
 
-### 参数文件完整版
+### 参数配置完整版
 
 #### Local_NG_CD
 
@@ -154,4 +201,47 @@ cache_interval: int = 1                    # score缓存间隔，如果内存撑
 max_degree: float = 1e6                    # 最大度限制，如果大于节点数表示无限制
 verbose: bool = True                       # 是否打印加边删边细节
 knowledge: T = None                        # 先验知识，类型为algorithm.fges_mb.utils.knowledge.Knowledge类，None表示无先验知识
+```
+
+
+# 三、开发
+
+## 环境准备
+
+### 创建虚拟环境
+  
+```sh
+# python版本：>=3.7
+cd $PROJECT_DIR
+python3.7 -m pip install -U pip setuptools
+python3.7 -m pip install poetry
+python3.7 -m poetry install
+```
+
+## 构建文档
+
+```sh
+poetry install --extra doc
+invoke doc
+```
+
+## 调用方式
+   
+### python
+```python
+# 算法主函数
+from causal_discovery.algorithm import local_ng_cd, fges_mb, mab_lingam  
+
+# 参数类
+from causal_discovery.parameter.algo import LocalNgCdParam, FgesMbParam, MabLingamParam
+```
+
+### 命令行（参数详情见上文）
+
+```sh
+# 查看参数说明
+python3.7 -m causal_discovery run-local-ng-cd --help
+
+# 调用示例
+python3.7 -m causal_discovery run-local-ng-cd simul_data.csv 3 matrixT
 ```
