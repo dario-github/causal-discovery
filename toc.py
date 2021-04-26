@@ -13,25 +13,25 @@ lines_in_file = []
 def creat_directory_line(line, headline_mark, i):
     """生成目录列表中的某一项"""
     if headline_mark == "#":
-        return '< a href=" ' + str(i) + '">' + line[2:-1] + "</ a>  \n"
+        return '<a href=" ' + str(i) + '">' + line[2:-1] + "</a>  \n"
     elif headline_mark == "##":
         # &emsp;为Markdown中的一种缩进，这里不直接用空格作为缩进是因为多个空格一起出现可能会生成代码块，引发歧义
-        return '&emsp;< a href="#' + str(i) + '">' + line[3:-1] + "</ a>  \n"
+        return '&emsp;<a href="#' + str(i) + '">' + line[3:-1] + "</a>  \n"
     elif headline_mark == "###":
-        return '&emsp;&emsp;< a href="#' + str(i) + '">' + line[4:-1] + "</ a>  \n"
+        return '&emsp;&emsp;<a href="#' + str(i) + '">' + line[4:-1] + "</a>  \n"
     elif headline_mark == "####":
-        return '&emsp;&emsp;&emsp;< a href="#' + str(i) + '">' + line[5:-1] + "</ a>  \n"
+        return '&emsp;&emsp;&emsp;<a href="#' + str(i) + '">' + line[5:-1] + "</a>  \n"
     elif headline_mark == "#####":
         return (
-            '&emsp;&emsp;&emsp;&emsp;< a href=" ' + str(i) + '">' + line[6:-1] + "</ a>  \n"
+            '&emsp;&emsp;&emsp;&emsp;<a href=" ' + str(i) + '">' + line[6:-1] + "</a>  \n"
         )
     elif headline_mark == "######":
         return (
-            '&emsp;&emsp;&emsp;&emsp;&emsp;< a href="#'
+            '&emsp;&emsp;&emsp;&emsp;&emsp;<a href="#'
             + str(i)
             + '">'
             + line[7:-1]
-            + "</ a>  \n"
+            + "</a>  \n"
         )
 
 
@@ -39,7 +39,7 @@ def creat_directory(f):
     """生成目录列表"""
     i = 0
     directory = []
-    directory.append('<a name="index">**Index**</ a>\n')
+    directory.append('<a name="index">**Index**</a>\n\n')
     for line in f:
         lines_in_file.append(line)
     f.close()
@@ -61,7 +61,7 @@ def creat_directory(f):
                         splitedline[0] + " ",
                         splitedline[0] + " " + '<a name="' + str(i) + '">',
                     )[:]
-                    + '</ a><a style="float:right;text-decoration:none;" href=" ">[Top]</ a>'
+                    + '</a><a style="float:right;text-decoration:none;" href=" ">[Top]</a>'
                     + "\n"
                 )
                 i = i + 1
@@ -74,7 +74,7 @@ def creat_directory(f):
                         splitedline[0] + " ",
                         splitedline[0] + " " + '<a name="' + str(i) + '">',
                     )[:-1]
-                    + '</ a><a style="float:right;text-decoration:none;" href="#index">[Top]</ a>'
+                    + '</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>'
                     + "\n"
                 )
                 i = i + 1
