@@ -82,7 +82,7 @@ def betaAlasso_grad_2step(x, y, var_noise: float, lambda_value: float):
         #     beta_new_n = inv(x_new*x_new.conj().T + var_noise*lambda_value * Sigma) * (x_new*y.conj().T)
         # # with gradient trad-off!
         beta_new_n = (
-            user_inv(x_new @ x_new.conj().T + var_noise * lambda_value * sigma)
+            pdinv(x_new @ x_new.conj().T + var_noise * lambda_value * sigma)
             @ (x_new @ y.conj().T)
             * trad_1
             + beta_new_o * trad_2

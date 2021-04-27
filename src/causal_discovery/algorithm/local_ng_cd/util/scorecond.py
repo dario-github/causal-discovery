@@ -29,7 +29,6 @@ import logging
 import math
 
 import numpy as np
-# import scipy.linalg
 from scipy.sparse import csr_matrix
 
 from causal_discovery.algorithm.local_ng_cd.util.pdinv import user_inv

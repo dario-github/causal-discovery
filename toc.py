@@ -79,6 +79,8 @@ def creat_directory(f):
                 )
                 i = i + 1
     return directory
+
+
 def creat_file_with_toc(f):
     """以目录列表为参数生成添加目录的文件"""
 
