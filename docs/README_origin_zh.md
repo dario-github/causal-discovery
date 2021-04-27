@@ -1,3 +1,5 @@
+[![CI](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml/badge.svg)](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml)
+
 # 一、简介
 
 因果发现算法工具包，目前包含：

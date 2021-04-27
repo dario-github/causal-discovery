@@ -1,3 +1,5 @@
+[![CI](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml/badge.svg)](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml)
+
 <a name="index">**Index**</a>
 
 <a href=" 0">一、简介</a>  
