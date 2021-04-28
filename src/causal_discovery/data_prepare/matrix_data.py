@@ -32,6 +32,7 @@ def filter_corr(ret_df: pd.DataFrame, filter_num=0.95):
     df = df.loc[filter(lambda x: x not in filter_idx, df_index)]
     return df
 
+
 def numeric_and_fill(df: pd.DataFrame, fill_methods: list):
     for col in df.columns:
         df.loc[:, col] = pd.to_numeric(df.loc[:, col], errors="coerce")  # 转为数值，非数值会转为NaN
@@ -87,8 +88,8 @@ def get_matrix_data(
     target: str,
     ret_df: pd.DataFrame = None,
     triple_df: pd.DataFrame = None,
-    corr_filter: bool =False,
-    used_cache_file: str ="",
+    corr_filter: bool = False,
+    used_cache_file: str = "",
     cache: bool = False,
     fill_methods: list = ["ffill", "bfill"],
 ):
@@ -135,11 +136,20 @@ if __name__ == "__main__":
     print(
         get_matrix_data(
             "A",
-            triple_df=pd.DataFrame([
-                ["20200101", "20200102", "20200103", "20200101", "20200102", "20200103"],
-                ["A", "A", "A", "B", "B", "B"],
-                [1, 2, 2.5, 3, 10, 222],
-            ]).T,
+            triple_df=pd.DataFrame(
+                [
+                    [
+                        "20200101",
+                        "20200102",
+                        "20200103",
+                        "20200101",
+                        "20200102",
+                        "20200103",
+                    ],
+                    ["A", "A", "A", "B", "B", "B"],
+                    [1, 2, 2.5, 3, 10, 222],
+                ]
+            ).T,
             corr_filter=True,
         )
     )
