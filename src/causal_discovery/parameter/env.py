@@ -52,13 +52,16 @@ def select_xp():
         import cupy as cp
     except (ModuleNotFoundError, ImportError):
         xp = np
+        print("Using numpy(No cupy)")
     else:
         gpu_num = set_gpu(wait=False, memory_limit=1e3)  # 不等待GPU，有就用，没有就用CPU
         if gpu_num >= 0:
             cp.cuda.Device(0).use()  # 指定cuda某张卡可见，卡号重排为0
             xp = cp
+            print(f"Using cupy(GPU-{gpu_num})")
         else:
             xp = np
+            print("Using numpy(No usefull GPU)")
     return xp
 
 

@@ -1,10 +1,7 @@
 # -*- encoding: utf-8 -*-
-# created by aochujie
 from pathlib import Path
 
 from invoke import task
-
-# from invoke.context import Context
 
 
 @task()
@@ -47,7 +44,7 @@ def check(c):
 @task()
 def doc(c, no_browser=False):
     """构建 sphinx-doc """
-    print("###### run doc")
+    print("=" * 5, "run doc", "=" * 5)
     with c.cd("docs"):
         c.run("make html")
     if not no_browser:

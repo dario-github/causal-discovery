@@ -74,8 +74,9 @@ def run_local_ng_cd(
     target: str,
     data_type: DataType,
     sep: str = ",",
-    index_col: str = None,
+    index_col: str = "None",
     header: int = 0,
+    fill_methods: str = "ffill,bfill",
     output_dir: str = "./output",
     log_root: str = "./logs",
     verbose: bool = True,
@@ -90,6 +91,7 @@ def run_local_ng_cd(
         sep (str, optional): [csv分隔符]. Defaults to ",".\n
         index_col (str, optional): [读取csv的index索引]. Defaults to None.\n
         header (str, optional): [读取csv的header索引]. Defaults to None.\n
+        fill_methods (str, optional): [pandas填充数据的方式，表示依次执行填充动作]. Defaults to "ffill,bfill".\n
         output_dir (str, optional): [输出目录]. Defaults to "./output".\n
         log_root (str, optional): [日志目录]. Defaults to "./logs".\n
         verbose (bool, optional): [是否打印日志到控制台]. Defaults to True.\n
@@ -105,20 +107,35 @@ def run_local_ng_cd(
         print_terminal=verbose,
         enable_monitor=True,
     )
+
+    logging.info("=" * 10 + "Start !!!" + "=" * 10)
+    logging.info("Read data.")
+
+    dataframe = pd.read_csv(
+        input_file,
+        index_col=[int(x) if x != "None" else None for x in index_col.split(",")],
+        header=header,
+        sep=sep,
+    )
+    datatype_param = {
+        DataType.triple: {"triple_df": dataframe},
+        DataType.matrix: {"ret_df": dataframe.T},
+        DataType.matrixT: {"ret_df": dataframe},
+    }
+
+    # matrix_data = dataframe
+
     # 解析三种输入数据
-    if data_type == DataType.triple:
-        triple_data = pd.read_csv(input_file, index_col=index_col, header=header, sep=sep)
+    if data_type in datatype_param:
         matrix_data = get_matrix_data(
-            target, triple_df=triple_data, corr_filter=True, used_cache_file=""
-        )
-    elif data_type == DataType.matrix:
-        matrix_data = pd.read_csv(
-            input_file, index_col=index_col, header=header, sep=sep
+            target,
+            corr_filter=True,
+            fill_methods=[x if x != "None" else None for x in fill_methods.split(",")],
+            **datatype_param[data_type],
         ).T
-    elif data_type == DataType.matrixT:
-        matrix_data = pd.read_csv(input_file, index_col=index_col, header=header, sep=sep)
     else:
         raise DataTypeError(f"Unknown datatype: {data_type}.")
+
     if target not in matrix_data.columns:
         raise DataTypeError(
             "Choosing matrix/matrixT datatype, but no target in indexes or columns, please check arg: index_col/header"
@@ -148,11 +165,14 @@ def run_local_ng_cd(
     ]
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    input_name = ".".join(Path(input_file).name.split(".")[:-1])
     pd.DataFrame(
         edges_trust, columns=["causal", "reason", "effect"]
-    ).drop_duplicates().to_csv(output_dir / "edges_trust.json", sep="\t", index=None)
+    ).drop_duplicates().to_csv(
+        output_dir / f"{input_name}.edges_trust.json", sep="\t", index=None
+    )
     pd.DataFrame(synthesize_effect, columns=["causal", "reason", "effect"]).to_csv(
-        output_dir / "synthesize_effect.json", sep="\t", index=None
+        output_dir / f"{input_name}.synthesize_effect.json", sep="\t", index=None
     )
     logging.info(f"results were saved in {output_dir.absolute().as_posix()}")
 
