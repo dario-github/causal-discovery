@@ -1,4 +1,5 @@
 [![CI](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml/badge.svg)](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml)
+[!version](https://img.shields.io/badge/version-1.0.2-yellow.svg?maxAge=259200)
 
 <a name="index">**Index**</a>
 

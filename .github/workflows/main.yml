@@ -26,6 +26,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+      
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -43,3 +44,12 @@ jobs:
       
       - name: tox
         run: python -m poetry run tox
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ./pytest.report # optional
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
