@@ -68,7 +68,7 @@ def test_main():
     ]
     cov_matrix = np.array(cov_matrix).T
     var_num = cov_matrix.shape[0]
-    noise = 2 * np.random.rand(2000, var_num) - 1
+    noise = 2 * np.random.rand(1000, var_num) - 1
     simul_data = np.linalg.inv(np.eye(var_num) - cov_matrix) @ noise.conj().T
     matrix_data = pd.DataFrame(simul_data.T)
     # 暴露出来允许修改的参数
