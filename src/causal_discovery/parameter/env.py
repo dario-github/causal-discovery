@@ -4,6 +4,7 @@ import sys
 import types
 from functools import lru_cache
 from os import environ
+from time import sleep
 
 import numpy as np
 
@@ -13,18 +14,17 @@ def set_gpu(memory_limit=4e3, gap_time=30, wait=True):
         gpu自动设置，返回可用显存最多的卡号
         -1: 无可用
     """
-    from os import popen
-    from time import sleep
+    from subprocess import check_output
+
+    def get_gpu_memory():
+        os_str = check_output("nvidia-smi -q -d Memory".split(" ")).decode("utf-8").split("\n")
+        tmp = [[y for y in os_str[idx:idx + 5] if "Free" in y] for idx, x in enumerate(os_str) if "GPU" in x]
+        tmp = [int(x[0].split()[2]) for x in tmp if x]
+        return tmp
 
     while True:
         try:
-            memory_gpu = [
-                int(x.split()[2])
-                for x in popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free")
-                .read()
-                .split("\n")
-                if x
-            ]
+            memory_gpu = get_gpu_memory()
             if max(memory_gpu) < memory_limit:
                 print("Low Memory")
                 if wait:
