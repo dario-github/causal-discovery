@@ -113,7 +113,7 @@ def run_local_ng_cd(
 
     dataframe = pd.read_csv(
         input_file,
-        index_col=[int(x) if x != "None" else None for x in index_col.split(",")],
+        index_col=([int(x) for x in index_col.split(",")] if index_col != "None" else None),
         header=header,
         sep=sep,
     )
