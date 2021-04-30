@@ -17,8 +17,14 @@ def set_gpu(memory_limit=4e3, gap_time=30, wait=True):
     from subprocess import check_output
 
     def get_gpu_memory():
-        os_str = check_output("nvidia-smi -q -d Memory".split(" ")).decode("utf-8").split("\n")
-        tmp = [[y for y in os_str[idx:idx + 5] if "Free" in y] for idx, x in enumerate(os_str) if "GPU" in x]
+        os_str = (
+            check_output("nvidia-smi -q -d Memory".split(" ")).decode("utf-8").split("\n")
+        )
+        tmp = [
+            [y for y in os_str[idx : idx + 5] if "Free" in y]
+            for idx, x in enumerate(os_str)
+            if "GPU" in x
+        ]
         tmp = [int(x[0].split()[2]) for x in tmp if x]
         return tmp
 
