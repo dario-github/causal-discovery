@@ -14,7 +14,7 @@ def filter_corr(ret_df: pd.DataFrame, filter_num=0.95):
     logging.info(f"filter corr: {filter_num}")
     x_df, y_df = np.where(cov_df >= filter_num)
     filter_idx = set()
-    for x, y in tqdm(zip(x_df, y_df), desc="filter_corr"):
+    for x, y in zip(x_df, y_df):
         if x >= y:
             continue
         if (df_index[x] in filter_idx) or (df_index[y] in filter_idx):
@@ -92,6 +92,7 @@ def get_matrix_data(
     used_cache_file: str = "",
     cache: bool = False,
     fill_methods: list = ["ffill", "bfill"],
+    need_norm: bool = False,
 ):
     """
     纵表转横表，基于相关系数筛选指标
@@ -107,9 +108,9 @@ def get_matrix_data(
             ret_df = numeric_and_fill(ret_df, fill_methods=fill_methods)
         pop_list = []
         logging.info("norm")
-        for idx, row in tqdm(ret_df.items(), desc="norm"):
+        for idx, row in ret_df.items():
             if row.max() != row.min():
-                row = (row - row.min()) / (row.max() - row.min())
+                row = (row - row.min()) / (row.max() - row.min()) if need_norm else row
             else:
                 pop_list.append(idx)
                 continue

@@ -36,7 +36,7 @@ def pylint(c):
     print("=" * 15)
 
 
-@task(black, isort, flake, pylint, default=True)
+@task(black, isort, flake, default=True)
 def check(c):
     print("~" * 5, "check finish!", "~" * 5)
 

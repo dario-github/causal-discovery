@@ -81,6 +81,7 @@ def run_local_ng_cd(
     log_root: str = "./logs",
     verbose: bool = True,
     candidate_two_step: bool = False,
+    need_norm: bool = False,
 ):
     """[因果发现算法：Local-NG-CD, 作者：张坤, 年份：2020]
 
@@ -133,6 +134,7 @@ def run_local_ng_cd(
             target,
             corr_filter=True,
             fill_methods=[x if x != "None" else None for x in fill_methods.split(",")],
+            need_norm=need_norm,
             **datatype_param[data_type],
         ).T
     else:

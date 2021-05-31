@@ -61,7 +61,7 @@ def get_edges_trust(b_orig, ind_mb):
     logging.info(log_str)
     if len(ind_into) > 0:
         for _, ind in enumerate(ind_into):
-            edges_trust.append([ind_mb[ind], ind_mb[0], b_orig[0, ind]])
+            edges_trust.append((ind_mb[ind], ind_mb[0], b_orig[0, ind]))
 
     # 目标的结果
     ind_from = np.flatnonzero(b_orig[:, 0] != 0)
@@ -70,7 +70,7 @@ def get_edges_trust(b_orig, ind_mb):
         return edges_trust
     logging.info(f"have {len(ind_from)} direct reason")
     for _, ind in enumerate(ind_from):
-        edges_trust.append([ind_mb[0], ind_mb[ind], b_orig[ind, 0]])
+        edges_trust.append((ind_mb[0], ind_mb[ind], b_orig[ind, 0]))
     # other edges into the children of target_variable
     for _, ind in enumerate(ind_from):
         ind_tmp = np.flatnonzero(b_orig[ind, :] != 0)
@@ -78,7 +78,7 @@ def get_edges_trust(b_orig, ind_mb):
         if len(ind_tmp) < 2:
             continue
         for _, ind_j in enumerate(ind_tmp):
-            edges_trust.append([ind_mb[ind_j], ind_mb[ind], b_orig[ind, ind_j]])
+            edges_trust.append((ind_mb[ind_j], ind_mb[ind], b_orig[ind, ind_j]))
     return edges_trust
 
 
@@ -200,6 +200,9 @@ def local_ng_cd(x, param: LocalNgCdParam, synthesize: bool = False):
     # 控制影响效应强度阈值，默认大于0.05
     b_orig = b_orig * (abs(b_orig) > param.b_orig_trust_value)
     edges_trust = get_edges_trust(b_orig, ind_mb)
+    edges_trust = sorted(
+        list(set(edges_trust)), key=lambda x: (x[1] != 0, x[1], -abs(x[2]))
+    )
     if not synthesize:
         return edges_trust
     else:
