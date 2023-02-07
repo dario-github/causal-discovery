@@ -173,10 +173,10 @@ def run_local_ng_cd(
     pd.DataFrame(
         edges_trust, columns=["causal", "reason", "effect"]
     ).drop_duplicates().to_csv(
-        output_dir / f"{input_name}.edges_trust.json", sep="\t", index=None
+        output_dir / f"{input_name}.edges_trust.txt", sep="\t", index=None
     )
     pd.DataFrame(synthesize_effect, columns=["causal", "reason", "effect"]).to_csv(
-        output_dir / f"{input_name}.synthesize_effect.json", sep="\t", index=None
+        output_dir / f"{input_name}.synthesize_effect.txt", sep="\t", index=None
     )
     logging.info(f"results were saved in {output_dir.absolute().as_posix()}")
 
