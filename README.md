@@ -2,93 +2,121 @@
 ![Codecov](https://img.shields.io/codecov/c/github/dario-github/causal_discovery?token=M5BFSZ0NG5)
 [![version](https://img.shields.io/badge/version-1.0.2-green.svg?maxAge=259200)](#)
 
+[English](./README.md) / [简体中文](./README.zh.md)
+
 <a name="index">**Index**</a>
 
-<a href=" 0">一、简介</a>  
-<a href=" 1">二、使用</a>  
-&emsp;<a href="#2">安装</a>  
-&emsp;&emsp;<a href="#3">pip安装</a>  
-&emsp;&emsp;<a href="#4">gpu支持</a>  
-&emsp;<a href="#5">快速入门</a>  
-&emsp;&emsp;<a href="#6">命令行调用</a>  
-&emsp;&emsp;<a href="#7">计算结果说明</a>  
-&emsp;<a href="#8">性能</a>  
-&emsp;<a href="#9">参数说明</a>  
-&emsp;&emsp;<a href="#10">命令行简化版</a>  
-&emsp;&emsp;<a href="#11">参数配置完整版</a>  
-&emsp;&emsp;&emsp;<a href="#12">Local_NG_CD</a>  
-<a href=" 13">三、开发</a>  
-&emsp;<a href="#14">环境准备</a>  
-&emsp;&emsp;<a href="#15">创建虚拟环境</a>  
-&emsp;<a href="#16">构建文档</a>  
-&emsp;<a href="#17">调用方式</a>  
-&emsp;&emsp;<a href="#18">python</a>  
-&emsp;&emsp;<a href="#19">命令行（参数详情见上文）</a>  
-# <a name="0">一、简介</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+<a href="0">1. Introduction</a>
 
-因果发现算法工具包，目前包含：
+<a href="1">2. Usage</a>
 
-- local_ng_cd：详见`docs/algo/Local_NG_CD.doc`
+&emsp;<a href="#2">Installation</a>
 
-其中：
+&emsp;&emsp;<a href="#3">Installing via pip</a>
 
-- local_ng_cd是线性模型，没有区分离散与连续数据，统一当做连续值处理。
+&emsp;&emsp;<a href="#4">GPU Support</a>
 
-建议先使用**local_ng_cd**测试数据集效果（速度最快，算法最新，结果渐进正确，考虑了未知混杂因子）
+&emsp;<a href="#5">Quick Start</a>
 
-使用方法详见下文。
+&emsp;&emsp;<a href="#6">Command Line Usage</a>
 
-# <a name="1">二、使用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+&emsp;&emsp;<a href="#7">Explanation of Output</a>
 
-## <a name="2">安装</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+&emsp;<a href="#8">Performance</a>
 
-### <a name="3">pip安装</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+&emsp;<a href="#9">Parameter Description</a>
+
+&emsp;&emsp;<a href="#10">Simplified Command Line Version</a>
+
+&emsp;&emsp;<a href="#11">Complete Parameter Configuration</a>
+
+&emsp;&emsp;&emsp;<a href="#12">Local_NG_CD</a>
+
+<a href="13">3. Development</a>
+
+&emsp;<a href="#14">Environment Setup</a>
+
+&emsp;&emsp;<a href="#15">Creating a Virtual Environment</a>
+
+&emsp;<a href="#16">Building Documentation</a>
+
+&emsp;<a href="#17">Method of Invocation</a>
+
+&emsp;&emsp;<a href="#18">Python</a>
+
+&emsp;&emsp;<a href="#19">Command Line (see above for parameter details)</a>
+
+
+# <a name="0">I. Introduction</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+
+The causal discovery algorithm toolkit currently includes:
+
+- local_ng_cd: see docs/algo/Local_NG_CD.doc for details
+
+Note that:
+
+- local_ng_cd is a linear model that does not distinguish between discrete and continuous data, and treats them uniformly as continuous values.
+
+It is recommended to use local_ng_cd to test the performance on the dataset first (it is the fastest and the algorithm is the newest, and the results are asymptotically correct, taking into account unknown confounding factors).
+
+See the following text for detailed usage instructions.
+
+# <a name="1">II. Usage</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+## <a name="2">Installation</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+### <a name="3">pip Installation</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
 ```sh
 python3.7 -m pip install causal-discovery
 ```
 
-### <a name="4">gpu支持</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="4">GPU Support</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-需手动查看cuda版本并安装相应版本cupy，可以不安装，默认调用numpy在CPU计算
+It is necessary to check the CUDA version manually and install the corresponding version of CuPy. If CuPy is not installed, NumPy will be used for CPU computation by default.
 
 ```sh
-# 查看支持的cuda版本
+# Check the supported CUDA version
 ls /usr/local/ | grep cuda
 
-# 安装对应cuda版本的cupy，以cuda10.0为例
+# Install the corresponding version of CuPy, for example, CUDA 10.0
 python3.7 -m poetry add cupy-cuda100
+
 ```
 
-## <a name="5">快速入门</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="5">Quick Start</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### <a name="6">命令行调用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="6">Command Line Usage</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
-# 查看参数说明
+# Check the parameter instructions
 python3.7 -m causal_discovery fast-simul-data --help
 python3.7 -m causal_discovery run-local-ng-cd --help
 
-# 生产仿真数据的参数样例
+# Example of parameters for generating simulated data
 python3.7 -m causal_discovery fast-simul-data --cov-matrix '[[0, 1, 0], [0, 0, 0.5], [1, 0, 0]]' --sample-size 10
 
-# 生产默认的仿真数据集（第一行为列索引，表示变量名，每行表示一次采样记录）
+# Generate a default simulated data set (the first row represents the column index indicating the variable names, and each row represents a sampling record)
 python3.7 -m causal_discovery fast-simul-data
 
-# 调用默认仿真数据集
+# Call the default simulated data set
 python3.7 -m causal_discovery run-local-ng-cd simul_data.csv 3 matrixT
 ```
 
-控制台日志最后一条为计算结果保存路径，如未指定`output`目录，默认为当前目录
+The last line of the console log is the path where the calculation result is saved. If the 'output' directory is not specified, it defaults to the current directory.
 
-### <a name="7">计算结果说明</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="7">Calculation Results Description</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-仿真数据集`simul_data.csv`调用`local_ng_cd`计算后，结果分为两个文件：
+After calling `local_ng_cd` with the simulation dataset `simul_data.csv`, the result is divided into two files:
 
-1）可信边`edges_trust.json`；可信边是原因直接指向结果的路径（1跳）
+1) Trustworthy edges `edges_trust.json`; trustworthy edges are the paths that directly lead from the cause to the effect (1 hop).
+
+    - Three columns, cause, effect, and causal effect strength.
+
+    - The larger the causal effect strength, the deeper the direct causal relationship is. Positive and negative values indicate positive and negative effects, respectively.
 
 ```
-# 三列，原因、结果、因果效应强度
-# 因果效应强度越大，表示直接因果关系越深，正负分别表示正向、负向影响。
 causal  reason  effect
 2       3       0.7705689874891608
 1       3       0.5863603810291644
@@ -98,10 +126,11 @@ causal  reason  effect
 6       5       0.6977965771255858
 ```
 
-2）复合权重`synthesize_effect.json`，复合权重是指从原因到结果的所有有向边权重的和，计算n跳复合权重就是计算邻接阵B的n次幂
+2) Composite weight `synthesize_effect.json`. The composite weight is the sum of all directed edge weights from the cause to the effect. The n-step composite weight can be calculated by computing the nth power of the adjacency matrix B.
+
+    - Three columns, cause, effect, and composite causal effect strength (within 5 hops).
 
 ```
-# 三列，原因、结果、复合因果效应强度（5跳内）
 causal  reason  effect
 2       3       0.7700866938213671
 1       3       0.6950546424688089
@@ -110,43 +139,46 @@ causal  reason  effect
 4       3       0.06902072305646559
 ```
 
-## <a name="8">性能</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="8">Performance</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-> 建议使用conda自带的numpy库，包含Inter提供的MKL，大幅提高矩阵运算速度（在求逆函数提高约50倍）
+> It is recommended to use the numpy library provided by conda, which includes MKL provided by Inter and greatly improves the speed of matrix operations (about 50 times faster in the inverse function)
 
-`numpy`、`cupy`、`torch`在500 * 500 随机阵求逆的性能对比
+Performance comparison of `numpy`, `cupy`, and `torch` for inverting a 500 x 500 random matrix
 
-|函数|mean|std|
+|Function|mean|std|
 |-|-|-|
 |numpy.linalg.inv|71.8 ms|± 64.9 ms|
 |**cupy.linalg.inv**|**1.39 ms**|**± 41.5 µs**|
 |torch.inverse|6.02 ms|± 6.26 µs|
 
-## <a name="9">参数说明</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### <a name="10">命令行简化版</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="9">Parameter Description</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+### <a name="10">Simplified Command Line Version</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
 
 ```sh
 Usage: __main__.py [OPTIONS] INPUT_FILE TARGET
                    DATA_TYPE:[triple|matrix|matrixT]
 
-  [因果发现算法：Local-NG-CD, 作者：张坤, 年份：2020]
+  [Causal Discovery Algorithm: Local-NG-CD, Author: Kun Zhang, Year: 2020]
   
 Args:
-    input_file (str): [输入文件地址，csv格式]
-    target (str): [目标变量名]
-    data_type (DataType): [数据类型：triple（三元组[样本索引，变量名，值]）、matrix（矩阵，行索引为变量名，
-    列索引为样本索引）、matrixT（矩阵，行索引为样本索引，列索引为变量名）]
-    sep (str, optional): [csv分隔符]. Defaults to ",".
-    index_col (str, optional): [读取csv的index索引]. Defaults to None.
-    header (str, optional): [读取csv的header索引]. Defaults to None.
-    output_dir (str, optional): [输出目录]. Defaults to "./output".
-    log_root (str, optional): [日志目录]. Defaults to "./logs".
-    verbose (bool, optional): [是否打印日志到控制台]. Defaults to True.
-    candidate_two_step (bool, optional): [是否启用2跳关系筛选]. Defaults to False.
+    input_file (str): [Input file address in csv format]
+    target (str): [Name of the target variable]
+    data_type (DataType): [Data type: triple (triplet [sample index, variable name, value]), 
+                           matrix (matrix, row index as variable name, column index as sample index),
+                           matrixT (matrix, row index as sample index, column index as variable name)]
+    sep (str, optional): [Csv delimiter]. Defaults to ",".
+    index_col (str, optional): [Index index for reading csv]. Defaults to None.
+    header (str, optional): [Header index for reading csv]. Defaults to None.
+    output_dir (str, optional): [Output directory]. Defaults to "./output".
+    log_root (str, optional): [Log directory]. Defaults to "./logs".
+    verbose (bool, optional): [Whether to print logs to the console]. Defaults to True.
+    candidate_two_step (bool, optional): [Whether to enable 2-step relationship filtering]. Defaults to False.
 
 Raises:
-    DataTypeError: [数据类型错误]
+    DataTypeError: [Data type error]
 
 Arguments:
   INPUT_FILE                      [required]
@@ -164,7 +196,7 @@ Options:
   --candidate-two-step / --no-candidate-two-step
                                   [default: False]
   --install-completion [bash|zsh|fish|powershell|pwsh]
-                                  Install completion for the specified shell.
+                                  Install completion for the specified shell
   --show-completion [bash|zsh|fish|powershell|pwsh]
                                   Show completion for the specified shell, to
                                   copy it or customize the installation.
@@ -172,61 +204,67 @@ Options:
   --help                          Show this message and exit.
 ```
 
-### <a name="11">参数配置完整版</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="11">Complete Version of Parameter Configuration</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 #### <a name="12">Local_NG_CD</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
+
 ```python
-# 引用方式
+# Importing method
 from causal_discovery.parameter.algo import LocalNgCdParam
 
-# 参数详情
-target_index: int = Field(0, ge=0)               # 目标变量索引，默认0，如非必要不用修改
-candidate_two_step: bool = True                  # 是否用2跳的相关性筛选更多指标，True会用两跳相关性，更多变量。
-alpha: float = Field(5e-2, ge=0, le=1)           # 相关性筛选时的p值，值越小表示越严格，一般用0.05或0.01表示95%、99%置信度
-mb_beta_threshold: float = Field(5e-2, ge=0)     # 用ALasso回归获取因子权重，用来筛选是否为无向边的阈值，值越大表示越严格
-ica_regu: float = Field(1e-3, gt=0)              # ICA时，用来约束稀疏度的惩罚项，值越小，得到的关系图越稀疏
-b_orig_trust_value: float = Field(5e-2, gt=0)    # 得到邻接阵B后，用来进一步筛选的权重阈值，默认0.05，值越大表示越严格
+# Parameter Details
+target_index: int = Field(0, ge=0)               # Target variable index, default 0, unless necessary, no need to modify
+candidate_two_step: bool = True                  # Whether to use the 2-step correlation filtering to obtain more variables. If True, the 2-step correlation is used to filter more variables.
+alpha: float = Field(5e-2, ge=0, le=1)           # p-value used in correlation filtering. The smaller the value, the more stringent. Generally, 0.05 or 0.01 is used to represent 95% or 99% confidence level
+mb_beta_threshold: float = Field(5e-2, ge=0)     # A threshold used to determine whether the edge is undirected when obtaining factor weights using ALasso regression. The larger the value, the more stringent.
+ica_regu: float = Field(1e-3, gt=0)              # A penalty term used to constrain the sparsity when using ICA. The smaller the value, the sparser the resulting graph.
+b_orig_trust_value: float = Field(5e-2, gt=0)    # A weight threshold used for further filtering after obtaining the adjacency matrix B. The default value is 0.05, and the larger the value, the more stringent.
 ```
 
-# <a name="13">三、开发</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="13">III. Development</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-## <a name="14">环境准备</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="14">Environment Setup</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-### <a name="15">创建虚拟环境</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="15">Creating a Virtual Environment</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
   
 ```sh
-# python版本：>=3.7
+# python version: >=3.7
 cd $PROJECT_DIR
 python3.7 -m pip install -U pip setuptools
 python3.7 -m pip install poetry
 python3.7 -m poetry install
 ```
 
-## <a name="16">构建文档</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="16">Building the Documentation
+
+</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
 poetry install --extra doc
 invoke doc
 ```
 
-## <a name="17">调用方式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+## <a name="17">Calling Method
+
+</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
    
 ### <a name="18">python</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 ```python
-# 算法主函数
+# Algorithm Main Function
 from causal_discovery.algorithm import local_ng_cd, fges_mb, mab_lingam  
 
-# 参数类
+# Parameter Class
 from causal_discovery.parameter.algo import LocalNgCdParam, FgesMbParam, MabLingamParam
 ```
 
-### <a name="19">命令行（参数详情见上文）</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+### <a name="19">Command Line (See above for details on the parameters)</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 ```sh
-# 查看参数说明
+# Viewing Parameter Descriptions
 python3.7 -m causal_discovery run-local-ng-cd --help
 
-# 调用示例
+# Calling Example
 python3.7 -m causal_discovery run-local-ng-cd simul_data.csv 3 matrixT
 ```
