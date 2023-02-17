@@ -1,5 +1,5 @@
 [![CI](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml/badge.svg)](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml)
-![Codecov](https://img.shields.io/codecov/c/github/dario-github/causal_discovery?token=M5BFSZ0NG5)
+[![codecov](https://codecov.io/gh/dario-github/causal_discovery_tools/branch/main/graph/badge.svg?token=M5BFSZ0NG5)](https://codecov.io/gh/dario-github/causal_discovery_tools)
 [![version](https://img.shields.io/badge/version-1.0.5-green.svg?maxAge=259200)](#)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=dario-github.causal_discovery&left_color=gray&right_color=green)
 
