@@ -1,6 +1,6 @@
 [![CI](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml/badge.svg)](https://github.com/dario-github/causal_discovery/actions/workflows/main.yml)
 ![Codecov](https://img.shields.io/codecov/c/github/dario-github/causal_discovery?token=M5BFSZ0NG5)
-[![version](https://img.shields.io/badge/version-1.0.2-green.svg?maxAge=259200)](#)
+[![version](https://img.shields.io/badge/version-1.0.5-green.svg?maxAge=259200)](#)
 
 [English](./README.md) / [简体中文](./README.zh.md)
 
